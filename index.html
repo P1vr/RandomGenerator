@@ -1,204 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Random Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #080808; color: #eee; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Generator Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 
-        /* ── THE VOID ── */
-        #void {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: none;
-            justify-content: center; align-items: center; cursor: pointer;
-        }
-        #void img { max-width: 100%; max-height: 100%; object-fit: contain; }
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: #080808; color: #eee; }
 
-        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; text-align: center; }
-        .page { display: none; flex-direction: column; align-items: center; }
-        .active { display: flex; }
+/* ── THE VOID ── */
+#void {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 10000; display: none;
+    justify-content: center; align-items: center; cursor: pointer;
+}
+#void img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* ── Menu ── */
-        .title { font-size: 3rem; font-weight: 900; margin-bottom: 40px; color: #fff; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%; }
-        .menu-card { background: #151515; padding: 40px; border-radius: 20px; cursor: pointer; border: 1px solid #222; transition: 0.2s; }
-        .menu-card:hover { background: #202020; border-color: #444; transform: translateY(-5px); }
+.container { max-width: 800px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+.page { display: none; flex-direction: column; align-items: center; }
+.active { display: flex; }
 
-        /* ── Generator UI ── */
-        .btn { padding: 15px 40px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; margin: 20px 0; font-size: 1rem; text-transform: uppercase; }
-        .btn-green { background: #22c55e; color: #fff; }
-        .btn-red { background: #ef4444; color: #fff; }
-        .btn-gold { background: #eab308; color: #000; }
-        
-        .result-card { width: 100%; background: #111; border-radius: 30px; padding: 25px; border: 1px solid #222; display: none; }
-        .img-frame { width: 100%; height: 400px; background: #000; border-radius: 20px; overflow: hidden; margin-bottom: 20px; cursor: zoom-in; position: relative; }
-        .img-frame img { width: 100%; height: 100%; object-fit: contain; }
+/* ── Menu ── */
+.title { font-size: 3rem; font-weight: 900; margin-bottom: 40px; color: #fff; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%; }
+.menu-card { background: #151515; padding: 40px; border-radius: 20px; cursor: pointer; border: 1px solid #222; transition: 0.2s; }
+.menu-card:hover { background: #202020; border-color: #444; transform: translateY(-5px); }
 
-        .name { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; color: #fff; }
-        .badge { display: inline-block; padding: 5px 15px; background: #222; border-radius: 8px; font-size: 0.8rem; margin: 5px; font-weight: 700; }
-        
-        /* ── Poke Stats ── */
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .stat-box { background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #222; }
-        .stat-label { font-size: 0.65rem; color: #777; font-weight: 800; }
-        .stat-val { font-size: 1.2rem; font-weight: 700; }
+/* ── Generator UI ── */
+.btn { padding: 15px 40px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; margin: 20px 0; font-size: 1rem; text-transform: uppercase; }
+.btn-green { background: #22c55e; color: #fff; }
+.btn-red { background: #ef4444; color: #fff; }
+.btn-gold { background: #eab308; color: #000; }
 
-        .loader { display: none; border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .back-link { cursor: pointer; margin-bottom: 20px; opacity: 0.5; font-weight: 700; align-self: flex-start; }
-    </style>
+.result-card { width: 100%; background: #111; border-radius: 30px; padding: 25px; border: 1px solid #222; display: none; }
+.img-frame { width: 100%; height: 400px; background: #000; border-radius: 20px; overflow: hidden; margin-bottom: 20px; cursor: zoom-in; position: relative; }
+.img-frame img { width: 100%; height: 100%; object-fit: contain; }
+
+.name { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; color: #fff; }
+.badge { display: inline-block; padding: 6px 15px; border-radius: 8px; font-size: 0.8rem; margin: 5px; font-weight: 800; }
+
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+.stat-box { background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #222; }
+.stat-label { font-size: 0.65rem; color: #777; font-weight: 800; }
+.stat-val { font-size: 1.2rem; font-weight: 700; }
+
+.loader { display: none; border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.back-link { cursor: pointer; margin-bottom: 20px; opacity: 0.5; font-weight: 700; align-self: flex-start; }
+</style>
 </head>
+
 <body>
 
-    <div id="void" onclick="this.style.display='none'"><img id="void-img"></div>
+<div id="void" onclick="this.style.display='none'">
+    <img id="void-img">
+</div>
 
-    <div class="container">
-        <div id="hub" class="page active">
-            <h1 class="title">THE GENERATOR</h1>
-            <div class="menu-grid">
-                <div class="menu-card" onclick="nav('animal-pg')">🦁<br>ANIMALS</div>
-                <div class="menu-card" onclick="nav('dino-pg')">🦖<br>DINOSAURS</div>
-                <div class="menu-card" onclick="nav('poke-pg')">⚡<br>POKÉMON</div>
-            </div>
-        </div>
+<div class="container">
 
-        <div id="animal-pg" class="page">
-            <div class="back-link" onclick="nav('hub')">← BACK</div>
-            <button class="btn btn-green" onclick="generateRandom('Category:Animals')">Random Animal</button>
-            <div class="loader" id="animal-load"></div>
-            <div id="animal-res" class="result-card">
-                <div class="img-frame" onclick="openVoid(this)"><img id="a-img"></div>
-                <h2 class="name" id="a-name"></h2>
-            </div>
-        </div>
-
-        <div id="dino-pg" class="page">
-            <div class="back-link" onclick="nav('hub')">← BACK</div>
-            <button class="btn btn-red" onclick="generateRandom('Category:Dinosaurs')">Random Dinosaur</button>
-            <div class="loader" id="dino-load"></div>
-            <div id="dino-res" class="result-card">
-                <div class="img-frame" onclick="openVoid(this)"><img id="d-img"></div>
-                <h2 class="name" id="d-name"></h2>
-            </div>
-        </div>
-
-        <div id="poke-pg" class="page">
-            <div class="back-link" onclick="nav('hub')">← BACK</div>
-            <button class="btn btn-gold" onclick="getPoke()">Generate Pokémon</button>
-            <div class="loader" id="poke-load"></div>
-            <div id="poke-res" class="result-card">
-                <div class="img-frame" onclick="openVoid(this)"><img id="p-img"></div>
-                <div id="p-badges"></div>
-                <h2 class="name" id="p-name"></h2>
-                <div class="stats" id="p-stats"></div>
-            </div>
-        </div>
+<div id="hub" class="page active">
+    <h1 class="title">THE GENERATOR</h1>
+    <div class="menu-grid">
+        <div class="menu-card" onclick="nav('animal-pg')">🦁<br>ANIMALS</div>
+        <div class="menu-card" onclick="nav('dino-pg')">🦖<br>DINOSAURS</div>
+        <div class="menu-card" onclick="nav('poke-pg')">⚡<br>POKÉMON</div>
     </div>
+</div>
 
-    <script>
-        function nav(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+<div id="animal-pg" class="page">
+    <div class="back-link" onclick="nav('hub')">← BACK</div>
+    <button class="btn btn-green" onclick="generateRandom('Category:Animals')">Random Animal</button>
+    <div class="loader" id="animal-load"></div>
+    <div id="animal-res" class="result-card">
+        <div class="img-frame" onclick="openVoid(this)"><img id="a-img"></div>
+        <h2 class="name" id="a-name"></h2>
+    </div>
+</div>
+
+<div id="dino-pg" class="page">
+    <div class="back-link" onclick="nav('hub')">← BACK</div>
+    <button class="btn btn-red" onclick="generateRandom('Category:Dinosaurs')">Random Dinosaur</button>
+    <div class="loader" id="dino-load"></div>
+    <div id="dino-res" class="result-card">
+        <div class="img-frame" onclick="openVoid(this)"><img id="d-img"></div>
+        <h2 class="name" id="d-name"></h2>
+    </div>
+</div>
+
+<div id="poke-pg" class="page">
+    <div class="back-link" onclick="nav('hub')">← BACK</div>
+    <button class="btn btn-gold" onclick="getPoke()">Generate Pokémon</button>
+    <div class="loader" id="poke-load"></div>
+    <div id="poke-res" class="result-card">
+        <div class="img-frame" onclick="openVoid(this)"><img id="p-img"></div>
+        <div id="p-badges"></div>
+        <h2 class="name" id="p-name"></h2>
+        <div class="stats" id="p-stats"></div>
+    </div>
+</div>
+
+</div>
+
+<script>
+function nav(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function openVoid(el) {
+    document.getElementById('void-img').src = el.querySelector('img').src;
+    document.getElementById('void').style.display = 'flex';
+}
+
+async function generateRandom(category) {
+    const isDino = category.includes('Dinosaur');
+    const loader = document.getElementById(isDino ? 'dino-load' : 'animal-load');
+    const resCard = document.getElementById(isDino ? 'dino-res' : 'animal-res');
+    
+    loader.style.display = 'block';
+    resCard.style.display = 'none';
+
+    try {
+        const listUrl = `https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${category}&cmlimit=500&format=json&origin=*`;
+        const listRes = await fetch(listUrl);
+        const listData = await listRes.json();
+        const members = listData.query.categorymembers;
+
+        let valid = false;
+        let finalData = null;
+
+        while(!valid) {
+            const randomChoice = members[Math.floor(Math.random() * members.length)];
+            const title = randomChoice.title;
+
+            if (title.includes(':') || title.includes('List of') || title.includes('Timeline') || title.includes('culture')) continue;
+
+            const detailUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+            const detailRes = await fetch(detailUrl);
+            finalData = await detailRes.json();
+
+            if (finalData.originalimage && finalData.originalimage.source) valid = true;
         }
 
-        function openVoid(el) {
-            document.getElementById('void-img').src = el.querySelector('img').src;
-            document.getElementById('void').style.display = 'flex';
-        }
+        document.getElementById(isDino ? 'd-img' : 'a-img').src = finalData.originalimage.source;
+        document.getElementById(isDino ? 'd-name' : 'a-name').textContent = finalData.title;
+        
+        loader.style.display = 'none';
+        resCard.style.display = 'block';
 
-        // --- TRUE RANDOM WIKI CRAWLER ---
-        async function generateRandom(category) {
-            const isDino = category.includes('Dinosaur');
-            const loader = document.getElementById(isDino ? 'dino-load' : 'animal-load');
-            const resCard = document.getElementById(isDino ? 'dino-res' : 'animal-res');
-            
-            loader.style.display = 'block';
-            resCard.style.display = 'none';
+    } catch (err) { generateRandom(category); }
+}
 
-            try {
-                // 1. Get a random list of 500 members from the category
-                const listUrl = `https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${category}&cmlimit=500&format=json&origin=*`;
-                const listRes = await fetch(listUrl);
-                const listData = await listRes.json();
-                const members = listData.query.categorymembers;
+async function getPoke() {
+    const loader = document.getElementById('poke-load');
+    const resCard = document.getElementById('poke-res');
+    loader.style.display = 'block';
+    resCard.style.display = 'none';
 
-                // 2. Pick one and validate it isn't "Junk" (Category, List, or Meta-page)
-                let valid = false;
-                let finalData = null;
+    try {
+        const id = Math.floor(Math.random() * 1025) + 1;
+        const pRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const data = await pRes.json();
+        
+        const sRes = await fetch(data.species.url);
+        const sData = await sRes.json();
 
-                while(!valid) {
-                    const randomChoice = members[Math.floor(Math.random() * members.length)];
-                    const title = randomChoice.title;
+        const genRoman = sData.generation.name.split('-')[1];
+        const romanMap = {i:1, ii:2, iii:3, iv:4, v:5, vi:6, vii:7, viii:8, ix:9};
+        const genNum = romanMap[genRoman] || genRoman;
 
-                    // Filter out non-species pages
-                    if (title.includes(':') || title.includes('List of') || title.includes('Timeline') || title.includes('culture')) continue;
+        const typeColors = {
+            normal:"#A8A77A", fire:"#EE8130", water:"#6390F0", electric:"#F7D02C",
+            grass:"#7AC74C", ice:"#96D9D6", fighting:"#C22E28", poison:"#A33EA1",
+            ground:"#E2BF65", flying:"#A98FF3", psychic:"#F95587", bug:"#A6B91A",
+            rock:"#B6A136", ghost:"#735797", dragon:"#6F35FC", dark:"#705746",
+            steel:"#B7B7CE", fairy:"#D685AD"
+        };
 
-                    const detailUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-                    const detailRes = await fetch(detailUrl);
-                    finalData = await detailRes.json();
+        document.getElementById('p-img').src =
+            data.sprites.other['official-artwork'].front_default;
 
-                    // Must have a real image to be valid
-                    if (finalData.originalimage && finalData.originalimage.source) {
-                        valid = true;
-                    }
-                }
+        document.getElementById('p-name').textContent =
+            `#${data.id.toString().padStart(3,'0')} ${data.name.toUpperCase()}`;
 
-                document.getElementById(isDino ? 'd-img' : 'a-img').src = finalData.originalimage.source;
-                document.getElementById(isDino ? 'd-name' : 'a-name').textContent = finalData.title;
-                
-                loader.style.display = 'none';
-                resCard.style.display = 'block';
-            } catch (err) {
-                generateRandom(category); // Auto-retry on fail
-            }
-        }
+        let badges = `<span class="badge" style="background:#222;color:#fff;">GEN ${genNum}</span>`;
 
-        // --- POKEMON LOGIC (Gen Digits + Stats) ---
-        async function getPoke() {
-            const loader = document.getElementById('poke-load');
-            const resCard = document.getElementById('poke-res');
-            loader.style.display = 'block';
-            resCard.style.display = 'none';
+        data.types.forEach(t => {
+            const typeName = t.type.name;
+            const color = typeColors[typeName] || "#444";
+            const darkText = ["electric","fairy","ice"].includes(typeName);
 
-            try {
-                const id = Math.floor(Math.random() * 1025) + 1;
-                const pRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-                const data = await pRes.json();
-                
-                const sRes = await fetch(data.species.url);
-                const sData = await sRes.json();
+            badges += `
+                <span class="badge" style="background:${color}; color:${darkText ? "#000" : "#fff"}">
+                    ${typeName.toUpperCase()}
+                </span>
+            `;
+        });
 
-                // Convert Roman Gen (generation-i) to Digit (1)
-                const genRoman = sData.generation.name.split('-')[1];
-                const romanMap = {i:1, ii:2, iii:3, iv:4, v:5, vi:6, vii:7, viii:8, ix:9};
-                const genNum = romanMap[genRoman] || genRoman;
+        document.getElementById('p-badges').innerHTML = badges;
 
-                document.getElementById('p-img').src = data.sprites.other['official-artwork'].front_default;
-                document.getElementById('p-name').textContent = data.name.toUpperCase();
-                
-                let badges = `<span class="badge">GEN ${genNum}</span>`;
-                data.types.forEach(t => {
-                    badges += `<span class="badge" style="background:#444">${t.type.name.toUpperCase()}</span>`;
-                });
-                document.getElementById('p-badges').innerHTML = badges;
+        const stats = data.stats;
+        document.getElementById('p-stats').innerHTML = `
+            <div class="stat-box"><div class="stat-label">HEALTH</div><div class="stat-val">${stats[0].base_stat}</div></div>
+            <div class="stat-box"><div class="stat-label">ATTACK</div><div class="stat-val">${stats[1].base_stat}</div></div>
+            <div class="stat-box"><div class="stat-label">DEFENSE</div><div class="stat-val">${stats[2].base_stat}</div></div>
+            <div class="stat-box"><div class="stat-label">SP ATK</div><div class="stat-val">${stats[3].base_stat}</div></div>
+            <div class="stat-box"><div class="stat-label">SP DEF</div><div class="stat-val">${stats[4].base_stat}</div></div>
+            <div class="stat-box"><div class="stat-label">SPEED</div><div class="stat-val">${stats[5].base_stat}</div></div>
+        `;
 
-                const stats = data.stats;
-                document.getElementById('p-stats').innerHTML = `
-                    <div class="stat-box"><div class="stat-label">HEALTH</div><div class="stat-val">${stats[0].base_stat}</div></div>
-                    <div class="stat-box"><div class="stat-label">ATTACK</div><div class="stat-val">${stats[1].base_stat}</div></div>
-                    <div class="stat-box"><div class="stat-label">DEFENSE</div><div class="stat-val">${stats[2].base_stat}</div></div>
-                    <div class="stat-box"><div class="stat-label">SP ATK</div><div class="stat-val">${stats[3].base_stat}</div></div>
-                    <div class="stat-box"><div class="stat-label">SP DEF</div><div class="stat-val">${stats[4].base_stat}</div></div>
-                    <div class="stat-box"><div class="stat-label">SPEED</div><div class="stat-val">${stats[5].base_stat}</div></div>
-                `;
+        loader.style.display = 'none';
+        resCard.style.display = 'block';
 
-                loader.style.display = 'none';
-                resCard.style.display = 'block';
-            } catch (e) { getPoke(); }
-        }
-    </script>
+    } catch (e) { getPoke(); }
+}
+</script>
+
 </body>
 </html>

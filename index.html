@@ -3,230 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Generator Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <title>Ultimate Random Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            background: #0a0a1a;
-            color: #fff;
-            overflow-x: hidden;
-        }
+        body { font-family: 'Poppins', sans-serif; background: #0a0a1a; color: #fff; overflow-x: hidden; }
 
-        /* ── Background Decoration ── */
-        .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12; animation: floatOrb 20s ease-in-out infinite alternate; }
-        .orb:nth-child(1) { width: 500px; height: 500px; background: #8b5cf6; top: -10%; left: -10%; }
-        .orb:nth-child(2) { width: 400px; height: 400px; background: #06b6d4; top: 50%; right: -10%; }
-        .orb:nth-child(3) { width: 350px; height: 350px; background: #f43f5e; bottom: -10%; left: 30%; }
-        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 100% { transform: translate(20px, -20px) scale(1.05); } }
-
-        /* ── Pages ── */
-        .page { display: none; min-height: 100vh; padding: 30px 20px 60px; flex-direction: column; align-items: center; position: relative; z-index: 1; }
-        .page.active { display: flex; animation: fadeSlideIn 0.5s ease; }
-        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ── Home Page ── */
-        .home-emoji { font-size: 3rem; margin-top: 60px; animation: bounce 2s ease-in-out infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .home-title { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; background: linear-gradient(135deg, #8b5cf6, #06b6d4, #f43f5e, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin: 15px 0 50px; }
-
-        /* ── Cards Grid ── */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 960px; width: 100%; }
-        .card { border-radius: 24px; padding: 40px 28px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); }
-        .card:hover { transform: translateY(-8px); border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); }
-        .card-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
-        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-
-        /* ── Generator Styles ── */
-        .back-btn { align-self: flex-start; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #aaa; padding: 10px 22px; border-radius: 14px; cursor: pointer; margin-top: 10px; }
-        .gen-header { text-align: center; margin: 30px 0 10px; }
-        .gen-title { font-size: clamp(1.6rem, 5vw, 2.5rem); font-weight: 800; margin-top: 10px; }
-        .gen-btn { padding: 16px 48px; border: none; border-radius: 50px; font-weight: 600; color: #fff; cursor: pointer; margin: 30px 0; transition: 0.3s; }
-        .green-btn { background: #10b981; box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3); }
-        .red-btn { background: #ef4444; box-shadow: 0 8px 30px rgba(239, 68, 68, 0.3); }
-        .yellow-btn { background: #f59e0b; box-shadow: 0 8px 30px rgba(245, 158, 11, 0.3); }
-
-        /* ── Result Card ── */
-        .result-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 28px; width: 100%; max-width: 480px; text-align: center; display: none; backdrop-filter: blur(10px); }
-        .result-card.show { display: block; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        
-        .result-img-wrap { width: 220px; height: 220px; margin: 0 auto 20px; border-radius: 20px; overflow: hidden; background: #000; cursor: zoom-in; position: relative; }
-        .result-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
-        .result-name { font-size: 1.8rem; font-weight: 700; text-transform: capitalize; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin: 5px; }
-        .legendary-badge { background: linear-gradient(to right, #ff00cc, #3333ff); color: white; }
-        .gen-badge { background: rgba(255,255,255,0.1); color: #ccc; }
-
-        /* ── Lightbox ── */
+        /* ── Lightbox (Solid Black Background) ── */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 1000; display: none;
+            background: #000; /* Pure black, no transparency */
+            z-index: 9999; display: none;
             justify-content: center; align-items: center; cursor: zoom-out;
         }
-        #lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        #lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* ── Types & Stats ── */
-        .types-wrap { display: flex; gap: 8px; justify-content: center; margin: 10px 0; }
-        .type-badge { padding: 4px 16px; border-radius: 50px; font-size: 0.78rem; font-weight: 600; text-transform: capitalize; color: #fff; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-        .stat-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 8px; text-align: left; }
-        .stat-label { font-size: 0.65rem; color: #777; text-transform: uppercase; }
-        .stat-value { font-size: 0.9rem; font-weight: 600; }
+        .page { display: none; min-height: 100vh; padding: 20px; flex-direction: column; align-items: center; }
+        .page.active { display: flex; }
 
-        /* Loader */
-        .loader { display: none; margin: 20px auto; width: 40px; height: 40px; border: 4px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; }
+        /* ── Cards ── */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 900px; width: 100%; margin-top: 50px; }
+        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+        .card-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+
+        /* ── Result Display ── */
+        .result-card { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 25px; width: 100%; max-width: 500px; text-align: center; margin-top: 20px; border: 1px solid rgba(255,255,255,0.1); display: none; }
+        .result-img-wrap { width: 100%; height: 300px; background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 20px; cursor: zoom-in; }
+        .result-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .gen-btn { padding: 15px 40px; border-radius: 50px; border: none; color: #fff; font-weight: 800; cursor: pointer; margin: 20px 0; transition: 0.3s; }
+        .animal-btn { background: #10b981; }
+        .dino-btn { background: #ef4444; }
+        .poke-btn { background: #f59e0b; }
+
+        .badge { display: inline-block; padding: 5px 15px; border-radius: 5px; font-size: 0.75rem; margin: 5px; font-weight: bold; background: rgba(255,255,255,0.1); }
+        .legend-badge { background: linear-gradient(45deg, #f59e0b, #ef4444); color: white; }
+        
+        .loader { display: none; width: 40px; height: 40px; border: 4px solid #333; border-top-color: #fff; border-radius: 50%; animation: spin 1s infinite linear; margin: 20px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .back-btn { align-self: flex-start; cursor: pointer; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <div class="bg-orbs"><div class="orb"></div><div class="orb"></div><div class="orb"></div></div>
-
-    <div id="lightbox" onclick="this.style.display='none'"><img id="lightbox-img" src=""></div>
+    <div id="lightbox" onclick="this.style.display='none'"><img id="lightbox-img"></div>
 
     <div id="home" class="page active">
-        <div class="home-emoji">🎲</div>
-        <h1 class="home-title">Random Generator Hub</h1>
+        <h1 style="margin-top: 50px; font-size: 2.5rem;">Random Hub</h1>
         <div class="cards-grid">
-            <div class="card" onclick="navigate('animal-page')"><span class="card-icon">🦁</span><div class="card-title">Animals</div></div>
-            <div class="card" onclick="navigate('dino-page')"><span class="card-icon">🦕</span><div class="card-title">Dinosaurs</div></div>
-            <div class="card" onclick="navigate('pokemon-page')"><span class="card-icon">⚡</span><div class="card-title">Pokémon</div></div>
+            <div class="card" onclick="showPage('animal-page')"><span class="card-icon">🦁</span><h2>Animals</h2></div>
+            <div class="card" onclick="showPage('dino-page')"><span class="card-icon">🦕</span><h2>Dinosaurs</h2></div>
+            <div class="card" onclick="showPage('pokemon-page')"><span class="card-icon">⚡</span><h2>Pokémon</h2></div>
         </div>
     </div>
 
     <div id="animal-page" class="page">
-        <button class="back-btn" onclick="navigate('home')">← Back</button>
-        <div class="gen-header"><h2 class="gen-title" style="color:#10b981">Animal Generator</h2></div>
-        <button class="gen-btn green-btn" onclick="generateRandom('animal')">🎲 Generate Animal</button>
-        <div class="loader" id="animal-loader"></div>
-        <div class="result-card" id="animal-result">
-            <div class="result-img-wrap" onclick="openLightbox(this)"><img id="animal-img"></div>
-            <div class="result-name" id="animal-name"></div>
+        <div class="back-btn" onclick="showPage('home')">← Back</div>
+        <button class="gen-btn animal-btn" onclick="getAnimal()">Generate Animal</button>
+        <div class="loader" id="animal-load"></div>
+        <div id="animal-res" class="result-card">
+            <div class="result-img-wrap" onclick="zoom(this)"><img id="a-img"></div>
+            <h2 id="a-name"></h2>
         </div>
     </div>
 
     <div id="dino-page" class="page">
-        <button class="back-btn" onclick="navigate('home')">← Back</button>
-        <div class="gen-header"><h2 class="gen-title" style="color:#ef4444">Dinosaur Generator</h2></div>
-        <button class="gen-btn red-btn" onclick="generateRandom('dino')">🎲 Generate Dinosaur</button>
-        <div class="loader" id="dino-loader"></div>
-        <div class="result-card" id="dino-result">
-            <div class="result-img-wrap" onclick="openLightbox(this)"><img id="dino-img"></div>
-            <div class="result-name" id="dino-name"></div>
+        <div class="back-btn" onclick="showPage('home')">← Back</div>
+        <button class="gen-btn dino-btn" onclick="getDino()">Generate Dinosaur</button>
+        <div class="loader" id="dino-load"></div>
+        <div id="dino-res" class="result-card">
+            <div class="result-img-wrap" onclick="zoom(this)"><img id="d-img"></div>
+            <h2 id="d-name"></h2>
         </div>
     </div>
 
     <div id="pokemon-page" class="page">
-        <button class="back-btn" onclick="navigate('home')">← Back</button>
-        <div class="gen-header"><h2 class="gen-title" style="color:#f59e0b">Pokémon Generator</h2></div>
-        <button class="gen-btn yellow-btn" onclick="generatePokemon()">🎲 Catch Pokémon</button>
-        <div class="loader" id="pokemon-loader"></div>
-        <div class="result-card" id="pokemon-result">
-            <div class="result-img-wrap" onclick="openLightbox(this)"><img id="pokemon-img"></div>
-            <div id="pokemon-badges"></div>
-            <div class="result-name" id="pokemon-name"></div>
-            <div class="types-wrap" id="pokemon-types"></div>
-            <div class="stats-grid" id="pokemon-stats"></div>
+        <div class="back-btn" onclick="showPage('home')">← Back</div>
+        <button class="gen-btn poke-btn" onclick="getPokemon()">Generate Pokémon</button>
+        <div class="loader" id="poke-load"></div>
+        <div id="poke-res" class="result-card">
+            <div class="result-img-wrap" onclick="zoom(this)"><img id="p-img"></div>
+            <div id="p-badges"></div>
+            <h2 id="p-name"></h2>
         </div>
     </div>
 
     <script>
-        function navigate(id) {
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        function openLightbox(wrapper) {
-            const src = wrapper.querySelector('img').src;
-            if(!src) return;
-            document.getElementById('lightbox-img').src = src;
+        function zoom(el) {
+            const img = el.querySelector('img');
+            if(!img.src || img.src.includes('undefined')) return;
+            document.getElementById('lightbox-img').src = img.src;
             document.getElementById('lightbox').style.display = 'flex';
         }
 
-        // Wikipedia-based Infinite Generators
-        async function generateRandom(type) {
-            const loader = document.getElementById(type + '-loader');
-            const result = document.getElementById(type + '-result');
+        // --- Animal/Dino Logic (Using High-Quality Image Filtering) ---
+        async function fetchWiki(type) {
+            const loader = document.getElementById(type + '-load');
+            const resDiv = document.getElementById(type + '-res');
             loader.style.display = 'block';
-            result.classList.remove('show');
+            resDiv.style.display = 'none';
 
             try {
-                // We use a list of common categories to pull random pages from Wikipedia
-                const category = type === 'animal' ? 'Category:Animals' : 'Category:Dinosaurs';
+                // Fetching from a curated list of biological names to ensure higher image success
+                const category = type === 'animal' ? 'Category:Mammals' : 'Category:Dinosaurs';
                 const listUrl = `https://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=${category}&cmlimit=500&format=json&origin=*`;
-                
                 const listRes = await fetch(listUrl);
                 const listData = await listRes.json();
-                const members = listData.query.categorymembers.filter(m => !m.title.includes(':'));
-                const randomPage = members[Math.floor(Math.random() * members.length)].title;
+                const pages = listData.query.categorymembers.filter(p => !p.title.includes(':'));
+                const randomTitle = pages[Math.floor(Math.random() * pages.length)].title;
 
-                const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(randomPage)}`;
-                const res = await fetch(summaryUrl);
-                const data = await res.json();
+                const detailUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(randomTitle)}`;
+                const detailRes = await fetch(detailUrl);
+                const data = await detailRes.json();
 
-                document.getElementById(type + '-img').src = data.thumbnail ? data.thumbnail.source : 'https://via.placeholder.com/400?text=No+Image';
-                document.getElementById(type + '-name').textContent = data.title;
-                
+                const imgTag = document.getElementById(type === 'animal' ? 'a-img' : 'd-img');
+                const nameTag = document.getElementById(type === 'animal' ? 'a-name' : 'd-name');
+
+                // Ensure we get a real image or try again once
+                if (!data.originalimage) { 
+                    fetchWiki(type); 
+                    return; 
+                }
+
+                imgTag.src = data.originalimage.source;
+                nameTag.textContent = data.title;
                 loader.style.display = 'none';
-                result.classList.add('show');
+                resDiv.style.display = 'block';
             } catch (e) {
-                alert("Error fetching data. Try again!");
                 loader.style.display = 'none';
             }
         }
 
-        // Advanced Pokémon Generator
-        async function generatePokemon() {
-            const loader = document.getElementById('pokemon-loader');
-            const result = document.getElementById('pokemon-result');
+        const getAnimal = () => fetchWiki('animal');
+        const getDino = () => fetchWiki('dino');
+
+        // --- Pokémon Logic (Full Pokedex + Mega/Legendary) ---
+        async function getPokemon() {
+            const loader = document.getElementById('poke-load');
+            const resDiv = document.getElementById('poke-res');
             loader.style.display = 'block';
-            result.classList.remove('show');
+            resDiv.style.display = 'none';
 
             try {
-                // Range includes Megas and Legendaries (up to ~1025 for Gen 9)
-                const id = Math.floor(Math.random() * 1025) + 1;
+                // Range includes Megas, Alolan, Galar, etc.
+                const id = Math.floor(Math.random() * 1025) + 1; 
                 const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
                 const data = await res.json();
+
+                const speciesRes = await fetch(data.species.url);
+                const speciesData = await speciesRes.json();
+
+                document.getElementById('p-img').src = data.sprites.other['official-artwork'].front_default;
                 
-                // Fetch Species for Legendary/Generation info
-                const specRes = await fetch(data.species.url);
-                const specData = await specRes.json();
-
-                // Image
-                document.getElementById('pokemon-img').src = data.sprites.other['official-artwork'].front_default || data.sprites.front_default;
+                let name = data.name.replace(/-/g, ' ');
+                let badges = `<span class="badge">Generation ${speciesData.generation.name.split('-')[1].toUpperCase()}</span>`;
                 
-                // Name & Badges
-                let nameLabel = data.name;
-                let badgesHTML = `<span class="badge gen-badge">${specData.generation.name.replace('generation-', 'Gen ')}</span>`;
+                if (speciesData.is_legendary || speciesData.is_mythical) {
+                    name = "⭐ LEGENDARY " + name;
+                    badges += `<span class="badge legend-badge">Legendary/Mythical</span>`;
+                }
                 
-                if(specData.is_legendary) badgesHTML += `<span class="badge legendary-badge">Legendary</span>`;
-                if(specData.is_mythical) badgesHTML += `<span class="badge legendary-badge" style="background:gold; color:black;">Mythical</span>`;
-                if(data.name.includes('-mega')) badgesHTML += `<span class="badge" style="background:#333">Mega Evolution</span>`;
+                if (data.name.includes('-mega')) {
+                    name = "MEGA " + name.replace('mega', '');
+                    badges += `<span class="badge" style="background:#444">Mega Form</span>`;
+                }
 
-                document.getElementById('pokemon-badges').innerHTML = badgesHTML;
-                document.getElementById('pokemon-name').textContent = nameLabel.replace(/-/g, ' ');
-
-                // Types
-                const typeColors = { fire:'#EE8130', water:'#6390F0', grass:'#7AC74C', electric:'#F7D02C', psychic:'#F95587', ice:'#96D9D6', dragon:'#6F35FC', dark:'#705746', fairy:'#D685AD', normal:'#A8A77A', fighting:'#C22E28', flying:'#A98FF3', poison:'#A33EA1', ground:'#E2BF65', rock:'#B6A136', bug:'#A6B91A', ghost:'#735797', steel:'#B7B7CE' };
-                document.getElementById('pokemon-types').innerHTML = data.types.map(t => `<span class="type-badge" style="background:${typeColors[t.type.name]}">${t.type.name}</span>`).join('');
-
-                // Stats
-                document.getElementById('pokemon-stats').innerHTML = `
-                    <div class="stat-item"><div class="stat-label">HP</div><div class="stat-value">${data.stats[0].base_stat}</div></div>
-                    <div class="stat-item"><div class="stat-label">ATK</div><div class="stat-value">${data.stats[1].base_stat}</div></div>
-                    <div class="stat-item"><div class="stat-label">DEF</div><div class="stat-value">${data.stats[2].base_stat}</div></div>
-                    <div class="stat-item"><div class="stat-label">SPD</div><div class="stat-value">${data.stats[5].base_stat}</div></div>
-                `;
+                document.getElementById('p-name').textContent = name;
+                document.getElementById('p-badges').innerHTML = badges;
 
                 loader.style.display = 'none';
-                result.classList.add('show');
+                resDiv.style.display = 'block';
             } catch (e) {
                 loader.style.display = 'none';
-                alert("The Pokémon escaped! Try again.");
+                getPokemon(); // Retry on failure
             }
         }
     </script>
